@@ -1,0 +1,50 @@
+name: Test Family Accounts V1
+
+on:
+  push:
+    branches: [family-accounts-v1]
+    paths:
+      - 'family_accounts.py'
+      - 'entrypoint.py'
+      - 'Dockerfile'
+      - '.github/workflows/test_family_accounts_v1.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: family-accounts-v1
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install -r requirements.txt
+      - name: Syntax and route smoke test
+        env:
+          AB_DIRECTORY_DB_PATH: /tmp/ab_teacher_test.db
+          AB_FAMILY_DB_PATH: /tmp/ab_family_test.db
+        run: |
+          set -euo pipefail
+          python -m py_compile main.py teacher_directory.py family_accounts.py entrypoint.py
+          python - <<'PY'
+          from teacher_directory import init_directory_db
+          from family_accounts import init_family_db
+          from entrypoint import app
+          init_directory_db(); init_family_db()
+          paths={r.path for r in app.routes}
+          required={
+            '/healthz','/v1/teachers','/v1/family/health',
+            '/v1/family/parents/register','/v1/family/parents/login',
+            '/v1/family/parents/students','/v1/family/students/login',
+            '/v1/family/parents/reports','/v1/family/students/reports',
+            '/v1/family/reports/publish'
+          }
+          missing=required-paths
+          assert not missing, missing
+          print('FAMILY_ACCOUNTS_V1_SMOKE_OK', len(paths))
+          PY
