@@ -1,0 +1,1 @@
+Teacher directory rollout in progress. Existing room endpoints are preserved.
