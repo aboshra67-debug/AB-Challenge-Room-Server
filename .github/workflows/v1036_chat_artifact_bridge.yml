@@ -11,13 +11,18 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Inspect Temp.sh landing page links
+      - name: Download and verify APK
         shell: bash
         run: |
           set -euo pipefail
           URL='https://temp.sh/sGkpS/AB_Tahadani_Learn_V1.0.36_ATTENDANCE_FAMILY_UI_SAFE.apk'
-          curl --fail --location --silent --show-error "$URL" -o /tmp/page.html
-          echo '--- LINKS ---'
-          grep -Eo 'https?://[^"<> ]+|href="[^"]+"' /tmp/page.html || true
-          echo '--- HTML ---'
-          cat /tmp/page.html
+          curl --fail --location --silent --show-error -X POST "$URL" -o AB_Tahadani_Learn_V1.0.36_ATTENDANCE_FAMILY_UI_SAFE.apk
+          echo 'ec84339e5a0b8127ae381f5a06ecb6b520f0445461a15907d286628966d25064  AB_Tahadani_Learn_V1.0.36_ATTENDANCE_FAMILY_UI_SAFE.apk' | sha256sum -c -
+          file AB_Tahadani_Learn_V1.0.36_ATTENDANCE_FAMILY_UI_SAFE.apk
+          wc -c AB_Tahadani_Learn_V1.0.36_ATTENDANCE_FAMILY_UI_SAFE.apk
+      - uses: actions/upload-artifact@v4
+        with:
+          name: AB-Tahadani-Learn-V1.0.36-Chat-Delivery
+          path: AB_Tahadani_Learn_V1.0.36_ATTENDANCE_FAMILY_UI_SAFE.apk
+          retention-days: 1
+          compression-level: 0
