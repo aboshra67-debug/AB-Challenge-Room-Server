@@ -1,0 +1,23 @@
+name: V1038 TempFile Verified Bridge
+on:
+  push:
+    branches: [temp-v1038-chat-delivery]
+    paths: ['.github/workflows/v1038_tempfile_verified_bridge.yml']
+permissions:
+  contents: read
+jobs:
+  bridge:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Download exact verified V1.0.38 APK
+        shell: bash
+        run: |
+          set -euo pipefail
+          curl -L --fail --silent --show-error 'https://tempfile.org/ddptApfCKT7/download' -o AB_Tahadani_Learn_V1.0.38_CONCEPT3_VISIBLE_DATA_SAFE.apk
+          echo 'd0ef0ccb3478eadcc3b8d8a0424cd3ba2d9460308060af779f0a75bc45370a3d  AB_Tahadani_Learn_V1.0.38_CONCEPT3_VISIBLE_DATA_SAFE.apk' | sha256sum -c -
+      - uses: actions/upload-artifact@v4
+        with:
+          name: AB-Tahadani-Learn-V1.0.38-Final-Delivery
+          path: AB_Tahadani_Learn_V1.0.38_CONCEPT3_VISIBLE_DATA_SAFE.apk
+          retention-days: 1
