@@ -1,0 +1,27 @@
+name: Deliver AB Tahadani V1042 APK
+on:
+  push:
+    branches: [temp-v1042-delivery]
+    paths: ['.github/workflows/deliver_v1042_apk.yml']
+permissions:
+  contents: read
+jobs:
+  deliver:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Download and verify exact V1.0.42 APK
+        shell: bash
+        run: |
+          set -euo pipefail
+          URL='https://tempfile.org/K58XFbN9DQC/download'
+          APK='AB_Tahadani_Learn_V1.0.42_GRADE4_FULL_T1_SAFE.apk'
+          EXPECT='2f3650a502b559d785b9794e4ee57c45a76af1e496375327d65a04d9ad38c3c1'
+          curl -L --fail --retry 3 --retry-delay 2 "$URL" -o "$APK"
+          echo "$EXPECT  $APK" | sha256sum -c -
+      - uses: actions/upload-artifact@v4
+        with:
+          name: AB-Tahadani-Learn-V1.0.42-Direct-Chat
+          path: AB_Tahadani_Learn_V1.0.42_GRADE4_FULL_T1_SAFE.apk
+          retention-days: 1
+          compression-level: 0
