@@ -10,18 +10,14 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Diagnose temporary V1.0.38 download
+      - name: Download exact signed V1.0.38 APK
         shell: bash
         run: |
           set -euo pipefail
-          URL='https://temp.sh/TBFNW/AB_Tahadani_Learn_V1.0.38_CONCEPT3_VISIBLE_DATA_SAFE.apk'
-          curl -L --fail --silent --show-error -D headers.txt "$URL" -o downloaded.bin
-          echo '=== headers ==='; cat headers.txt
-          echo '=== size/hash/type ==='; wc -c downloaded.bin; sha256sum downloaded.bin; file downloaded.bin
-          echo '=== first 32 bytes ==='; xxd -l 32 downloaded.bin || true
-          ACTUAL=$(sha256sum downloaded.bin | awk '{print $1}')
-          test "$ACTUAL" = 'd0ef0ccb3478eadcc3b8d8a0424cd3ba2d9460308060af779f0a75bc45370a3d'
-          mv downloaded.bin AB_Tahadani_Learn_V1.0.38_CONCEPT3_VISIBLE_DATA_SAFE.apk
+          URL='https://raw.githubusercontent.com/aboshra67-debug/ab-tahadani-learn-build/build-v1038-concept3-visible-data-safe-v1/release_outputs/v1038/AB_Tahadani_Learn_V1.0.38_CONCEPT3_VISIBLE_DATA_SAFE.apk?token=B2ISDTTVJMVLA7RDH7KIAM3KTPUGDAA'
+          curl -L --fail --silent --show-error "$URL" -o AB_Tahadani_Learn_V1.0.38_CONCEPT3_VISIBLE_DATA_SAFE.apk
+          test "$(wc -c < AB_Tahadani_Learn_V1.0.38_CONCEPT3_VISIBLE_DATA_SAFE.apk)" = '6487700'
+          echo 'd0ef0ccb3478eadcc3b8d8a0424cd3ba2d9460308060af779f0a75bc45370a3d  AB_Tahadani_Learn_V1.0.38_CONCEPT3_VISIBLE_DATA_SAFE.apk' | sha256sum -c -
       - uses: actions/upload-artifact@v4
         with:
           name: AB-Tahadani-Learn-V1.0.38-Chat-Delivery
