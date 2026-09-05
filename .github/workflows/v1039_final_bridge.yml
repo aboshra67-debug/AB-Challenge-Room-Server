@@ -1,0 +1,26 @@
+name: V1039 Final Chat Bridge
+on:
+  push:
+    branches: [temp-v1038-chat-delivery]
+    paths: ['.github/workflows/v1039_final_bridge.yml']
+permissions:
+  contents: read
+jobs:
+  bridge:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Download and verify exact V1.0.39 APK
+        shell: bash
+        run: |
+          set -euo pipefail
+          URL='https://tempfile.org/kjesud6t3zf/download'
+          APK='AB_Tahadani_Learn_V1.0.39_THEME_DATA_RECOVERY_SAFE.apk'
+          EXPECT='6c26580f147e223cf5affa44094efdcdbc0c00fa11a8f909feda788ffc47c54e'
+          curl -L --fail --silent --show-error "$URL" -o "$APK"
+          echo "$EXPECT  $APK" | sha256sum -c -
+      - uses: actions/upload-artifact@v4
+        with:
+          name: AB-Tahadani-Learn-V1.0.39-Final-Delivery
+          path: AB_Tahadani_Learn_V1.0.39_THEME_DATA_RECOVERY_SAFE.apk
+          retention-days: 1
