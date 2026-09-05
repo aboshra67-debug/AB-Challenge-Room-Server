@@ -1,0 +1,26 @@
+name: V1037 Chat Artifact Bridge
+on:
+  push:
+    branches: [temp-v1037-chat-delivery]
+    paths:
+      - '.github/workflows/v1037_chat_artifact_bridge.yml'
+permissions:
+  contents: read
+jobs:
+  bridge:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Download and verify APK
+        shell: bash
+        run: |
+          set -euo pipefail
+          URL='https://temp.sh/NZbMx/AB_Tahadani_Learn_V1.0.37_CONCEPT3_UI_SAFE.apk'
+          curl --fail --location --silent --show-error -X POST "$URL" -o AB_Tahadani_Learn_V1.0.37_CONCEPT3_UI_SAFE.apk
+          echo 'c58fe38b6bd6f3cb0108e799f60c36b1900b0a92ca3f9762891c8205fb3f2cfc  AB_Tahadani_Learn_V1.0.37_CONCEPT3_UI_SAFE.apk' | sha256sum -c -
+      - uses: actions/upload-artifact@v4
+        with:
+          name: AB-Tahadani-Learn-V1.0.37-Chat-Delivery
+          path: AB_Tahadani_Learn_V1.0.37_CONCEPT3_UI_SAFE.apk
+          retention-days: 1
+          compression-level: 0
