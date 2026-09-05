@@ -11,14 +11,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Diagnose temporary download
+      - name: Inspect Temp.sh landing page links
         shell: bash
         run: |
           set -euo pipefail
           URL='https://temp.sh/sGkpS/AB_Tahadani_Learn_V1.0.36_ATTENDANCE_FAMILY_UI_SAFE.apk'
-          curl --fail --location --silent --show-error -D /tmp/headers.txt "$URL" -o /tmp/v1036_download
-          cat /tmp/headers.txt
-          wc -c /tmp/v1036_download
-          sha256sum /tmp/v1036_download
-          file /tmp/v1036_download
-          xxd -l 32 /tmp/v1036_download
+          curl --fail --location --silent --show-error "$URL" -o /tmp/page.html
+          echo '--- LINKS ---'
+          grep -Eo 'https?://[^"<> ]+|href="[^"]+"' /tmp/page.html || true
+          echo '--- HTML ---'
+          cat /tmp/page.html
