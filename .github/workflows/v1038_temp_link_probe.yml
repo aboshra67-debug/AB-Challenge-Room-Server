@@ -1,0 +1,23 @@
+name: V1038 Temp Link Probe
+on:
+  push:
+    branches: [temp-v1038-chat-delivery]
+    paths: ['.github/workflows/v1038_temp_link_probe.yml']
+permissions:
+  contents: read
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Probe temp page links
+        shell: bash
+        run: |
+          set -euo pipefail
+          curl -L --fail --silent --show-error 'https://temp.sh/TBFNW/AB_Tahadani_Learn_V1.0.38_CONCEPT3_VISIBLE_DATA_SAFE.apk' -o page.html
+          echo '--- HREFS ---'
+          grep -Eo 'href="[^"]+"' page.html || true
+          echo '--- URLS ---'
+          grep -Eo 'https?://[^"<> ]+' page.html || true
+          echo '--- DOWNLOAD WORDS ---'
+          grep -ni 'download\|raw\|file' page.html | head -40 || true
