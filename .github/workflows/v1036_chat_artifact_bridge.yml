@@ -11,15 +11,14 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Download and verify APK
+      - name: Diagnose temporary download
         shell: bash
         run: |
           set -euo pipefail
-          curl --fail --location --silent --show-error 'https://temp.sh/sGkpS/AB_Tahadani_Learn_V1.0.36_ATTENDANCE_FAMILY_UI_SAFE.apk' -o AB_Tahadani_Learn_V1.0.36_ATTENDANCE_FAMILY_UI_SAFE.apk
-          echo 'ec84339e5a0b8127ae381f5a06ecb6b520f0445461a15907d286628966d25064  AB_Tahadani_Learn_V1.0.36_ATTENDANCE_FAMILY_UI_SAFE.apk' | sha256sum -c -
-      - uses: actions/upload-artifact@v4
-        with:
-          name: AB-Tahadani-Learn-V1.0.36-Chat-Delivery
-          path: AB_Tahadani_Learn_V1.0.36_ATTENDANCE_FAMILY_UI_SAFE.apk
-          retention-days: 1
-          compression-level: 0
+          URL='https://temp.sh/sGkpS/AB_Tahadani_Learn_V1.0.36_ATTENDANCE_FAMILY_UI_SAFE.apk'
+          curl --fail --location --silent --show-error -D /tmp/headers.txt "$URL" -o /tmp/v1036_download
+          cat /tmp/headers.txt
+          wc -c /tmp/v1036_download
+          sha256sum /tmp/v1036_download
+          file /tmp/v1036_download
+          xxd -l 32 /tmp/v1036_download
