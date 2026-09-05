@@ -10,12 +10,18 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Download and verify V1.0.38 APK
+      - name: Diagnose temporary V1.0.38 download
         shell: bash
         run: |
           set -euo pipefail
-          curl -L --fail --silent --show-error 'https://temp.sh/TBFNW/AB_Tahadani_Learn_V1.0.38_CONCEPT3_VISIBLE_DATA_SAFE.apk' -o AB_Tahadani_Learn_V1.0.38_CONCEPT3_VISIBLE_DATA_SAFE.apk
-          echo 'd0ef0ccb3478eadcc3b8d8a0424cd3ba2d9460308060af779f0a75bc45370a3d  AB_Tahadani_Learn_V1.0.38_CONCEPT3_VISIBLE_DATA_SAFE.apk' | sha256sum -c -
+          URL='https://temp.sh/TBFNW/AB_Tahadani_Learn_V1.0.38_CONCEPT3_VISIBLE_DATA_SAFE.apk'
+          curl -L --fail --silent --show-error -D headers.txt "$URL" -o downloaded.bin
+          echo '=== headers ==='; cat headers.txt
+          echo '=== size/hash/type ==='; wc -c downloaded.bin; sha256sum downloaded.bin; file downloaded.bin
+          echo '=== first 32 bytes ==='; xxd -l 32 downloaded.bin || true
+          ACTUAL=$(sha256sum downloaded.bin | awk '{print $1}')
+          test "$ACTUAL" = 'd0ef0ccb3478eadcc3b8d8a0424cd3ba2d9460308060af779f0a75bc45370a3d'
+          mv downloaded.bin AB_Tahadani_Learn_V1.0.38_CONCEPT3_VISIBLE_DATA_SAFE.apk
       - uses: actions/upload-artifact@v4
         with:
           name: AB-Tahadani-Learn-V1.0.38-Chat-Delivery
