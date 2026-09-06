@@ -1,0 +1,37 @@
+name: Lulu V5.1 Temporary Public Artifact Bridge
+
+on:
+  push:
+    branches:
+      - lulu-v51-transfer-temp
+    paths:
+      - '.github/workflows/lulu-v51-temp-artifact.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  bridge:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Retrieve exact verified unsigned APK
+        shell: bash
+        run: |
+          set -euo pipefail
+          URL='https://tmpfiles.org/dl/wTw9kF4m8f7f/ab_lulu_v5.1_salma_shakir_unsigned.apk'
+          OUT='/tmp/AB_Lulu_V5.1_SALMA_SHAKIR_UNSIGNED.apk'
+          curl --fail --location --silent --show-error --max-time 120 "$URL" -o "$OUT"
+          test "$(stat -c %s "$OUT")" = '3045099'
+          echo '3a8e85e1135fa183defbf76d880c57133215ffa96bc992e18f3be23b918bda24  /tmp/AB_Lulu_V5.1_SALMA_SHAKIR_UNSIGNED.apk' | sha256sum -c -
+          unzip -tq "$OUT"
+          test "$(unzip -Z1 "$OUT" | grep -c '^assets/voice/.*\.mp3$')" -eq 176
+
+      - name: Upload temporary one-day artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: Lulu-V5.1-Unsigned-Transfer
+          path: /tmp/AB_Lulu_V5.1_SALMA_SHAKIR_UNSIGNED.apk
+          compression-level: 0
+          retention-days: 1
+          if-no-files-found: error
