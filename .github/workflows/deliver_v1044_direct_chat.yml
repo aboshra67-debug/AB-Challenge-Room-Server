@@ -1,0 +1,33 @@
+name: Deliver V1044 Direct Chat
+on:
+  push:
+    branches: [temp-v1044-direct-delivery]
+    paths: ['.github/workflows/deliver_v1044_direct_chat.yml']
+permissions:
+  contents: read
+jobs:
+  deliver:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: temp-v1044-direct-delivery
+      - name: Download and verify APK + source
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p delivery
+          curl -L --fail --silent --show-error 'https://tempfile.org/RbmZQXPmYsH/download' -o delivery/AB_Tahadani_Learn_V1.0.44_GRADE6_FULL_T1_7882Q_SAFE.apk
+          curl -L --fail --silent --show-error 'https://tempfile.org/Xz73uCiQbE4/download' -o delivery/AB_Tahadani_Learn_V1.0.44_SOURCE.zip
+          echo '705bcd8f0b8eade5e8598dc39847233b87e85b43e2ed2f1fbc7ff61c1bfbcf22  delivery/AB_Tahadani_Learn_V1.0.44_GRADE6_FULL_T1_7882Q_SAFE.apk' | sha256sum -c -
+          echo '62ae485dc1cba763b00b19e0e5663ab170bf446807a50c5a3ddf863567949c50  delivery/AB_Tahadani_Learn_V1.0.44_SOURCE.zip' | sha256sum -c -
+      - name: Upload direct-chat artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: AB-Tahadani-Learn-V1.0.44-Direct-Chat
+          path: |
+            delivery/AB_Tahadani_Learn_V1.0.44_GRADE6_FULL_T1_7882Q_SAFE.apk
+            delivery/AB_Tahadani_Learn_V1.0.44_SOURCE.zip
+          if-no-files-found: error
+          compression-level: 0
+          retention-days: 1
