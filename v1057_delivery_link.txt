@@ -1,0 +1,5 @@
+Temporary verified APK delivery link for AB Tahadani V1.0.57:
+https://tmpfiles.org/dl/wVwfmkLIEqpq/ab_tahadani_learn_v1.0.57_colorful_education_ui_signed.apk
+
+Expected SHA-256: 8c099db1d8d8d1f7bd0347dc56a67d80fbabfbcc04877d555d106a04057ba42f
+Expected bytes: 10508770
